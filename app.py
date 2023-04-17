@@ -45,14 +45,13 @@ def roll_dice_round():
                 show_player_scoreboard_avaliable_score_box("player_"+str(_current_player+1))
             rolled_dice = roll_dice(dice_count - len(_saved_dice))
             if len(_saved_dice) > 0:
-                output_txt = "Rolled dice: "
-                output_txt += f"""{" ".join(map(str, rolled_dice))} ({" ".join(map(str, _saved_dice))})"""
-                print_output(output_txt)
+                print_output(Rolled dice: )
+                print_dice("".join(map(str, rolled_dice))+"-"+"".join(map(str, _saved_dice)))
             else:
-                print_output("Rolled dice: "+" ".join(map(str, rolled_dice)))
+                print_output("Rolled dice:")
+                print_dice("".join(map(str, rolled_dice)))
             _saved_dice = select_dice(rolled_dice)
-
-    print_output("Your final dice: "+" ".join(map(str, _saved_dice)))
+    input("This was your last roll. Press enter to save your score. ") or "0"
     print_output("")
     return _saved_dice
 
@@ -100,6 +99,31 @@ def select_dice(dice):
     return list(selected_dice)
 
 
+def print_dice(dice):
+
+    number = {
+      "1": {0: " ..... ", 1: " ..1.. ", 2: " ..... "},
+      "2": {0: " 2.... ", 1: " ..... ", 2: " ....2 "},
+      "3": {0: " 3.... ", 1: " ..3.. ", 2: " ....3 "},
+      "4": {0: " 4...4 ", 1: " ..... ", 2: " 4...4 "},
+      "5": {0: " 5...5 ", 1: " ..5.. ", 2: " 5...5 "},
+      "6": {0: " 6...6 ", 1: " 6...6 ", 2: " 6...6 "},
+      "-": {0: "       ", 1: " ..... ", 2: "       "},
+    }
+
+    output = ""
+
+    for i in range(3):
+        output += "\n"
+        for di, d in enumerate(dice):
+            if di == 0:
+                output += "|"
+            output += number[str(d)][i]+"|"
+    output += "\n"
+
+    print(output)
+
+
 def set_highscore(player, dice):
 
     # Show avaliable highscore categories
@@ -124,8 +148,6 @@ def set_highscore(player, dice):
 
     # Save player score
     set_player_score(player, score_position, score)
-    # if _current_game_round+1 < _max_game_round:
-    #     show_player_scoreboard(player)
 
 
 def set_player_score(player, category_id, score):
