@@ -1,1 +1,4 @@
 venv
+__pycache__
+leaderboard.json
+.DS_Store
