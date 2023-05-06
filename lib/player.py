@@ -30,6 +30,8 @@ class player():
 
     def total_score(self):
 
+        # Return the total score if it's already calculated
+        # 16 = index of 'Total' in score card (not the same as id)
         if self.score_card[16]['score'] is not None:
             return self.score_card[16]['score']
 
@@ -41,7 +43,7 @@ class player():
             if box['score'] is None:
                 continue
 
-            if box['id'] in range(0, 6):
+            if box['id'] in range(0, 7):
                 _total_score_upper += box['score']
 
             _total_score += box['score']
