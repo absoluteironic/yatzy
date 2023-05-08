@@ -233,6 +233,9 @@ class yatzy(object):
             player_score = player.total_score()
             table_data[0].append(player.name)
 
+            # Add score to leaderboard
+            hs.add_score(player.name, player_score)
+
             for row in player.score_card:
                 if row['score'] is None:
                     table_data[int(row['id'])].append('0')
@@ -250,15 +253,13 @@ class yatzy(object):
         print("\n")
 
         if is_tie:
-            output = "It's a tie between {} with {} points. Your names and points will be added to the leaderboard."
+            output = "It's a tie between {} with {} points."
             print(output.format(" and ".join(winners), highest_score))
         else:
-            output = "The winner is {} with {} points. Your name and points will be added to the leaderboard."
+            output = "The winner is {} with {} points."
             print(output.format(winners[0], highest_score))
 
         print("\n")
-        for name in winners:
-            hs.add_score(name, highest_score)
 
         show_leaderboard = input("Press y to see the leaderboard and n to end the game. ") or "y"
         print("\n")
