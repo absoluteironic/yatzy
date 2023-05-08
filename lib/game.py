@@ -108,7 +108,7 @@ class yatzy(object):
             selected_dice.sort()
             return selected_dice
         else:
-            selected_dice = input("Enter the dice you want to keep (eg: 123): ") or "0"
+            selected_dice = self.input_select_dice()
 
         if selected_dice == "0":
             return []
@@ -124,12 +124,28 @@ class yatzy(object):
                     selection_valid = True
                 else:
                     selection_valid = False
-                    self.print_output(f"""Error: You are trying to select a dice that's not avaliable; {d}.""")
-                    selected_dice = input("Try again; Enter the dice you want to save: ") or "0"
+                    self.print_output("You can only select the dice you have rolled. Try again.")
+                    selected_dice = self.input_select_dice()
 
                     break
 
         return list(selected_dice)
+
+    def input_select_dice(self):
+        input_message = "Enter the dice you want to keep (eg: 123): "
+        selected_dice = input(input_message) or "0"
+        is_valid = False
+
+        while not is_valid:
+            try:
+                int(selected_dice)
+            except ValueError:
+                print("You can only provide a number. Try again.")
+                selected_dice = input(input_message) or "0"
+            else:
+                is_valid = True
+
+        return selected_dice
 
     def print_dice(self, dice):
 
@@ -187,19 +203,45 @@ class yatzy(object):
         self.print_output("")
 
         # Prompt user for input
-        dice_str = "-".join(map(str, dice))
-        score_position = input("Select where to save your score ("+dice_str+"): ") or "0"
+        score_position = self.input_save_score()
 
-        score_position = int(score_position)
-        score_position -= 1
-        score = player.box_score(score_position, dice)
-
-        # Score position not avaliable
+        # While the selectd score position is already set
         while player.score_card[score_position]['score']:
-            score_position = input("That position is already used. Select a new position ("+dice_str+"): ")
+            print("That position is already set. Try again.")
+            score_position = self.input_save_score()
 
         # Save player score
+        score = player.box_score(score_position, dice)
         self.players[self._current_player_index].add_score(score_position, score)
+
+    def input_save_score(self):
+        dice_str = "-".join(map(str, self._saved_dice))
+        input_message = "Select where to save your score ("+dice_str+"): "
+        score_position = input(input_message)
+
+        in_range = False
+        is_int = False
+
+        while not is_int or not in_range:
+
+            try:
+                int(score_position)
+            except ValueError:
+                is_int = False
+                print("You can only provide a number. Try again.")
+                score_position = input(input_message)
+            else:
+                is_int = True
+                score_position = int(score_position)
+
+                if score_position >= 1 and score_position <= 15:
+                    in_range = True
+                else:
+                    print("You can only provide a number between 1 and 15. Try again.")
+                    score_position = input(input_message)
+
+        # score_position -= 1
+        return int(score_position)-1
 
     def show_highscore(self):
 
